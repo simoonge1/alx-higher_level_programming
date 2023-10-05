@@ -5,4 +5,4 @@ def add(a, b):
 
     Args:
         a: first integer
-        b: second integer
+        b: second integr
