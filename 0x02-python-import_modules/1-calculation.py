@@ -1,19 +1,8 @@
 #!/usr/bin/python3
 
-def add(a, b):
-    """My addition function
+if __name__ == "__main__":
+    """Print the sum, difference, multiple and quotient of 10 and 5."""
+    from calculator_1 import add, sub, mul, div
 
-    Args:
-        a: first integer
-        b: second integer
-
-    Returns:
-        The return value. a + b
-    """
-    return (a + b)
-
-
-def sub(a, b):
-    """My subtraction function
-
-    Args:
+    a = 10
+    b = 5
