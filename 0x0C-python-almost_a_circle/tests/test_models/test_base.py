@@ -1,1 +1,547 @@
-{"payload":{"allShortcutsEnabled":false,"fileTree":{"0x0C-python-almost_a_circle/tests/test_models":{"items":[{"name":"__init__.py","path":"0x0C-python-almost_a_circle/tests/test_models/__init__.py","contentType":"file"},{"name":"test_base.py","path":"0x0C-python-almost_a_circle/tests/test_models/test_base.py","contentType":"file"},{"name":"test_rectangle.py","path":"0x0C-python-almost_a_circle/tests/test_models/test_rectangle.py","contentType":"file"},{"name":"test_square.py","path":"0x0C-python-almost_a_circle/tests/test_models/test_square.py","contentType":"file"}],"totalCount":4},"0x0C-python-almost_a_circle/tests":{"items":[{"name":"test_models","path":"0x0C-python-almost_a_circle/tests/test_models","contentType":"directory"},{"name":"__init__.py","path":"0x0C-python-almost_a_circle/tests/__init__.py","contentType":"file"}],"totalCount":2},"0x0C-python-almost_a_circle":{"items":[{"name":"models","path":"0x0C-python-almost_a_circle/models","contentType":"directory"},{"name":"tests","path":"0x0C-python-almost_a_circle/tests","contentType":"directory"},{"name":"README.md","path":"0x0C-python-almost_a_circle/README.md","contentType":"file"}],"totalCount":3},"":{"items":[{"name":"0x07-python-test_driven_development","path":"0x07-python-test_driven_development","contentType":"directory"},{"name":"0x0A-python-inheritance","path":"0x0A-python-inheritance","contentType":"directory"},{"name":"0x0C-python-almost_a_circle","path":"0x0C-python-almost_a_circle","contentType":"directory"},{"name":"0x17 C - Doubly linked lists","path":"0x17 C - Doubly linked lists","contentType":"directory"},{"name":"0x18 C - Dynamic libraries","path":"0x18 C - Dynamic libraries","contentType":"directory"},{"name":"100-realloc.c","path":"100-realloc.c","contentType":"file"},{"name":"101-mul.c","path":"101-mul.c","contentType":"file"},{"name":"101-password","path":"101-password","contentType":"file"},{"name":"2-calloc.c","path":"2-calloc.c","contentType":"file"},{"name":"3-array_range.c","path":"3-array_range.c","contentType":"file"},{"name":"_putchar.c","path":"_putchar.c","contentType":"file"},{"name":"main.h","path":"main.h","contentType":"file"}],"totalCount":12}},"fileTreeProcessingTime":8.81745,"foldersToFetch":[],"reducedMotionEnabled":null,"repo":{"id":627534744,"defaultBranch":"main","name":"alx","ownerLogin":"sadatmisr","currentUserCanPush":false,"isFork":false,"isEmpty":false,"createdAt":"2023-04-13T17:04:55.000Z","ownerAvatar":"https://avatars.githubusercontent.com/u/130691074?v=4","public":true,"private":false,"isOrgOwned":false},"symbolsExpanded":false,"treeExpanded":true,"refInfo":{"name":"main","listCacheKey":"v0:1695082556.0","canEdit":false,"refType":"branch","currentOid":"907071687d98b6e848fd75176358115c4081617f"},"path":"0x0C-python-almost_a_circle/tests/test_models/test_base.py","currentUser":null,"blob":{"rawLines":["#!/usr/bin/python3","'''Module for Base unit tests.'''","import unittest","from models.base import Base","from models.rectangle import Rectangle","from models.square import Square","","","class TestBase(unittest.TestCase):","    '''Tests the Base class.'''","","    def setUp(self):","        '''Imports module, instantiates class'''","        Base._Base__nb_objects = 0","        pass","","    def tearDown(self):","        '''Cleans up after each test_method.'''","        pass","","    def test_A_nb_objects_private(self):","        '''Tests if nb_objects is private class attribute.'''","        self.assertTrue(hasattr(Base, \"_Base__nb_objects\"))","","    def test_B_nb_objects_initialized(self):","        '''Tests if nb_objects initializes to zero.'''","        self.assertEqual(getattr(Base, \"_Base__nb_objects\"), 0)","","    def test_C_instantiation(self):","        '''Tests Base() instantiation.'''","        b = Base()","        self.assertEqual(str(type(b)), \"<class 'models.base.Base'>\")","        self.assertEqual(b.__dict__, {\"id\": 1})","        self.assertEqual(b.id, 1)","","    def test_D_constructor(self):","        '''Tests constructor signature.'''","        with self.assertRaises(TypeError) as e:","            Base.__init__()","        msg = \"__init__() missing 1 required positional argument: 'self'\"","        self.assertEqual(str(e.exception), msg)","","    def test_D_constructor_args_2(self):","        '''Tests constructor signature with 2 notself args.'''","        with self.assertRaises(TypeError) as e:","            Base.__init__(self, 1, 2)","        msg = \"__init__() takes from 1 to 2 positional arguments but 3 \\","were given\"","        self.assertEqual(str(e.exception), msg)","","    def test_E_consecutive_ids(self):","        '''Tests consecutive ids.'''","        b1 = Base()","        b2 = Base()","        self.assertEqual(b1.id + 1, b2.id)","","    def test_F_id_synced(self):","        '''Tests sync between class and instance id.'''","        b = Base()","        self.assertEqual(getattr(Base, \"_Base__nb_objects\"), b.id)","","    def test_F_id_synced_more(self):","        '''Tests sync between class and instance id.'''","        b = Base()","        b = Base(\"Foo\")","        b = Base(98)","        b = Base()","        self.assertEqual(getattr(Base, \"_Base__nb_objects\"), b.id)","","    def test_G_custom_id_int(self):","        '''Tests custom int id.'''","        i = 98","        b = Base(i)","        self.assertEqual(b.id, i)","","    def test_G_custom_id_str(self):","        '''Tests custom int id.'''","        i = \"FooBar\"","        b = Base(i)","        self.assertEqual(b.id, i)","","    def test_G_id_keyword(self):","        '''Tests id passed as keyword arg.'''","        i = 421","        b = Base(id=i)","        self.assertEqual(b.id, i)","","    # ----------------- Tests for #15 ------------------------","    def test_H_to_json_string(self):","        '''Tests to_json_string() signature:'''","        with self.assertRaises(TypeError) as e:","            Base.to_json_string()","        s = \"to_json_string() missing 1 required positional argument: \\","'list_dictionaries'\"","        self.assertEqual(str(e.exception), s)","","        self.assertEqual(Base.to_json_string(None), \"[]\")","        self.assertEqual(Base.to_json_string([]), \"[]\")","        d = [{'x': 101, 'y': 20123, 'width': 312321, 'id': 522244,","             'height': 34340}]","        self.assertEqual(len(Base.to_json_string(d)),","                         len(str(d)))","        d = [{'x': 1, 'y': 2, 'width': 3, 'id': 4, 'height': 5}]","        self.assertEqual(len(Base.to_json_string(d)),","                         len(str(d)))","        d = [{\"foobarrooo\": 989898}]","        self.assertEqual(Base.to_json_string(d),","                         '[{\"foobarrooo\": 989898}]')","","        d = [{\"foobarrooo\": 989898}, {\"abc\": 123}, {\"HI\": 0}]","        self.assertEqual(Base.to_json_string(d),","                         '[{\"foobarrooo\": 989898}, {\"abc\": 123}, {\"HI\": 0}]')","","        d = [{'x': 1, 'y': 2, 'width': 3, 'id': 4, 'height': 5},","             {'x': 101, 'y': 20123, 'width': 312321, 'id': 522244,","             'height': 34340}]","        self.assertEqual(len(Base.to_json_string(d)),","                         len(str(d)))","        d = [{}]","        self.assertEqual(Base.to_json_string(d),","                         '[{}]')","        d = [{}, {}]","        self.assertEqual(Base.to_json_string(d),","                         '[{}, {}]')","","        r1 = Rectangle(10, 7, 2, 8)","        dictionary = r1.to_dictionary()","        json_dictionary = Base.to_json_string([dictionary])","        dictionary = str([dictionary])","        dictionary = dictionary.replace(\"'\", '\"')","        self.assertEqual(dictionary, json_dictionary)","","        r1 = Rectangle(10, 7, 2, 8)","        r2 = Rectangle(1, 2, 3, 4)","        r3 = Rectangle(2, 3, 4, 5)","        dictionary = [r1.to_dictionary(), r2.to_dictionary(),","                      r3.to_dictionary()]","        json_dictionary = Base.to_json_string(dictionary)","        dictionary = str(dictionary)","        dictionary = dictionary.replace(\"'\", '\"')","        self.assertEqual(dictionary, json_dictionary)","","        r1 = Square(10, 7, 2)","        dictionary = r1.to_dictionary()","        json_dictionary = Base.to_json_string([dictionary])","        dictionary = str([dictionary])","        dictionary = dictionary.replace(\"'\", '\"')","        self.assertEqual(dictionary, json_dictionary)","","        r1 = Square(10, 7, 2)","        r2 = Square(1, 2, 3)","        r3 = Square(2, 3, 4)","        dictionary = [r1.to_dictionary(), r2.to_dictionary(),","                      r3.to_dictionary()]","        json_dictionary = Base.to_json_string(dictionary)","        dictionary = str(dictionary)","        dictionary = dictionary.replace(\"'\", '\"')","        self.assertEqual(dictionary, json_dictionary)","","    # ----------------- Tests for #17 ------------------------","    def test_H_test_from_json_string(self):","        '''Tests to_json_string() signature:'''","        with self.assertRaises(TypeError) as e:","            Base.from_json_string()","        s = \"from_json_string() missing 1 required positional argument: \\","'json_string'\"","        self.assertEqual(str(e.exception), s)","","        self.assertEqual(Base.from_json_string(None), [])","        self.assertEqual(Base.from_json_string(\"\"), [])","","        s = '[{\"x\": 1, \"y\": 2, \"width\": 3, \"id\": 4, \"height\": 5}, \\","{\"x\": 101, \"y\": 20123, \"width\": 312321, \"id\": 522244, \"height\": 34340}]'","        d = [{'x': 1, 'y': 2, 'width': 3, 'id': 4, 'height': 5},","             {'x': 101, 'y': 20123, 'width': 312321, 'id': 522244,","             'height': 34340}]","        self.assertEqual(Base.from_json_string(s), d)","","        d = [{}, {}]","        s = '[{}, {}]'","        self.assertEqual(Base.from_json_string(s), d)","        d = [{}]","        s = '[{}]'","        self.assertEqual(Base.from_json_string(s), d)","","        d = [{\"foobarrooo\": 989898}, {\"abc\": 123}, {\"HI\": 0}]","        s = '[{\"foobarrooo\": 989898}, {\"abc\": 123}, {\"HI\": 0}]'","        self.assertEqual(Base.from_json_string(s), d)","","        d = [{\"foobarrooo\": 989898}]","        s = '[{\"foobarrooo\": 989898}]'","        self.assertEqual(Base.from_json_string(s), d)","","        d = [{'x': 1, 'y': 2, 'width': 3, 'id': 4, 'height': 5}]","        s = '[{\"x\": 1, \"y\": 2, \"width\": 3, \"id\": 4, \"height\": 5}]'","        self.assertEqual(Base.from_json_string(s), d)","","        d = [{'x': 101, 'y': 20123, 'width': 312321, 'id': 522244,","             'height': 34340}]","        s = '[{\"x\": 101, \"y\": 20123, \"width\": 312321, \"id\": 522244, \\","\"height\": 34340}]'","        self.assertEqual(Base.from_json_string(s), d)","","        list_in = [","            {'id': 89, 'width': 10, 'height': 4},","            {'id': 7, 'width': 1, 'height': 7}","        ]","        list_out = Rectangle.from_json_string(","            Rectangle.to_json_string(list_in))","        self.assertEqual(list_in, list_out)","","        # ----------------- Tests for #16 ------------------------","    def test_I_save_to_file(self):","        '''Tests save_to_file() method.'''","        import os","        r1 = Rectangle(10, 7, 2, 8)","        r2 = Rectangle(2, 4)","        Rectangle.save_to_file([r1, r2])","","        with open(\"Rectangle.json\", \"r\") as file:","            self.assertEqual(len(file.read()), 105)","","        Rectangle.save_to_file(None)","        with open(\"Rectangle.json\", \"r\") as file:","            self.assertEqual(file.read(), \"[]\")","","        try:","            os.remove(\"Rectangle.json\")","        except:","            pass","        Rectangle.save_to_file([])","        with open(\"Rectangle.json\", \"r\") as file:","            self.assertEqual(file.read(), \"[]\")","","        r2 = Rectangle(2, 4)","        Rectangle.save_to_file([r2])","        with open(\"Rectangle.json\", \"r\") as file:","            self.assertEqual(len(file.read()), 52)","","        Square.save_to_file(None)","        with open(\"Square.json\", \"r\") as file:","            self.assertEqual(file.read(), \"[]\")","","        try:","            os.remove(\"Square.json\")","        except:","            pass","        Square.save_to_file([])","        with open(\"Square.json\", \"r\") as file:","            self.assertEqual(file.read(), \"[]\")","","        r2 = Square(1)","        Square.save_to_file([r2])","        with open(\"Square.json\", \"r\") as file:","            self.assertEqual(len(file.read()), 38)","","        # ----------------- Tests for #18 ------------------------","    def test_J_create(self):","        '''Tests create() method.'''","        r1 = Rectangle(3, 5, 1)","        r1_dictionary = r1.to_dictionary()","        r2 = Rectangle.create(**r1_dictionary)","        self.assertEqual(str(r1), str(r2))","        self.assertFalse(r1 is r2)","        self.assertFalse(r1 == r2)","","        # ----------------- Tests for #19 ------------------------","    def test_K_load_from_file(self):","        '''Tests load_from_file() method.'''","        r1 = Rectangle(10, 7, 2, 8)","        r2 = Rectangle(2, 4)","        list_in = [r1, r2]","        Rectangle.save_to_file(list_in)","        list_out = Rectangle.load_from_file()","        self.assertNotEqual(id(list_in[0]), id(list_out[0]))","        self.assertEqual(str(list_in[0]), str(list_out[0]))","        self.assertNotEqual(id(list_in[1]), id(list_out[1]))","        self.assertEqual(str(list_in[1]), str(list_out[1]))","","        s1 = Square(5)","        s2 = Square(7, 9, 1)","        list_in = [s1, s2]","        Square.save_to_file(list_in)","        list_out = Square.load_from_file()","        self.assertNotEqual(id(list_in[0]), id(list_out[0]))","        self.assertEqual(str(list_in[0]), str(list_out[0]))","        self.assertNotEqual(id(list_in[1]), id(list_out[1]))","        self.assertEqual(str(list_in[1]), str(list_out[1]))","","if __name__ == \"__main__\":","    unittest.main()"],"stylingDirectives":[[{"start":0,"end":18,"cssClass":"pl-c"}],[{"start":0,"end":33,"cssClass":"pl-s"}],[{"start":0,"end":6,"cssClass":"pl-k"},{"start":7,"end":15,"cssClass":"pl-s1"}],[{"start":0,"end":4,"cssClass":"pl-k"},{"start":5,"end":11,"cssClass":"pl-s1"},{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":23,"cssClass":"pl-k"},{"start":24,"end":28,"cssClass":"pl-v"}],[{"start":0,"end":4,"cssClass":"pl-k"},{"start":5,"end":11,"cssClass":"pl-s1"},{"start":12,"end":21,"cssClass":"pl-s1"},{"start":22,"end":28,"cssClass":"pl-k"},{"start":29,"end":38,"cssClass":"pl-v"}],[{"start":0,"end":4,"cssClass":"pl-k"},{"start":5,"end":11,"cssClass":"pl-s1"},{"start":12,"end":18,"cssClass":"pl-s1"},{"start":19,"end":25,"cssClass":"pl-k"},{"start":26,"end":32,"cssClass":"pl-v"}],[],[],[{"start":0,"end":5,"cssClass":"pl-k"},{"start":6,"end":14,"cssClass":"pl-v"},{"start":15,"end":23,"cssClass":"pl-s1"},{"start":24,"end":32,"cssClass":"pl-v"}],[{"start":4,"end":31,"cssClass":"pl-s"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":13,"cssClass":"pl-en"},{"start":14,"end":18,"cssClass":"pl-s1"}],[{"start":8,"end":48,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-v"},{"start":13,"end":30,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-k"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":16,"cssClass":"pl-en"},{"start":17,"end":21,"cssClass":"pl-s1"}],[{"start":8,"end":47,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-k"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":33,"cssClass":"pl-en"},{"start":34,"end":38,"cssClass":"pl-s1"}],[{"start":8,"end":61,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":23,"cssClass":"pl-en"},{"start":24,"end":31,"cssClass":"pl-en"},{"start":32,"end":36,"cssClass":"pl-v"},{"start":38,"end":57,"cssClass":"pl-s"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":37,"cssClass":"pl-en"},{"start":38,"end":42,"cssClass":"pl-s1"}],[{"start":8,"end":54,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-v"},{"start":39,"end":58,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-c1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"}],[{"start":8,"end":41,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-en"},{"start":34,"end":35,"cssClass":"pl-s1"},{"start":39,"end":67,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":26,"cssClass":"pl-s1"},{"start":27,"end":35,"cssClass":"pl-s1"},{"start":38,"end":42,"cssClass":"pl-s"},{"start":44,"end":45,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":26,"cssClass":"pl-s1"},{"start":27,"end":29,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-c1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":26,"cssClass":"pl-en"},{"start":27,"end":31,"cssClass":"pl-s1"}],[{"start":8,"end":42,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-s1"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":40,"cssClass":"pl-v"},{"start":42,"end":44,"cssClass":"pl-k"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":25,"cssClass":"pl-en"}],[{"start":8,"end":11,"cssClass":"pl-s1"},{"start":12,"end":13,"cssClass":"pl-c1"},{"start":14,"end":73,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":30,"cssClass":"pl-s1"},{"start":31,"end":40,"cssClass":"pl-s1"},{"start":43,"end":46,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":33,"cssClass":"pl-en"},{"start":34,"end":38,"cssClass":"pl-s1"}],[{"start":8,"end":62,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-s1"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":40,"cssClass":"pl-v"},{"start":42,"end":44,"cssClass":"pl-k"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":25,"cssClass":"pl-en"},{"start":26,"end":30,"cssClass":"pl-s1"},{"start":32,"end":33,"cssClass":"pl-c1"},{"start":35,"end":36,"cssClass":"pl-c1"}],[{"start":8,"end":11,"cssClass":"pl-s1"},{"start":12,"end":13,"cssClass":"pl-c1"},{"start":14,"end":72,"cssClass":"pl-s"},{"start":71,"end":72,"cssClass":"pl-cce"}],[{"start":0,"end":11,"cssClass":"pl-s"},{"start":0,"end":0,"cssClass":"pl-cce"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":30,"cssClass":"pl-s1"},{"start":31,"end":40,"cssClass":"pl-s1"},{"start":43,"end":46,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":30,"cssClass":"pl-en"},{"start":31,"end":35,"cssClass":"pl-s1"}],[{"start":8,"end":36,"cssClass":"pl-s"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":17,"cssClass":"pl-v"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":17,"cssClass":"pl-v"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":27,"cssClass":"pl-s1"},{"start":28,"end":30,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"},{"start":36,"end":38,"cssClass":"pl-s1"},{"start":39,"end":41,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-s1"}],[{"start":8,"end":55,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-v"},{"start":39,"end":58,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-s1"},{"start":63,"end":65,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":29,"cssClass":"pl-en"},{"start":30,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":55,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":22,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":19,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-v"},{"start":39,"end":58,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-s1"},{"start":63,"end":65,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"}],[{"start":8,"end":34,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":14,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":18,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":26,"cssClass":"pl-s1"},{"start":27,"end":29,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"}],[{"start":8,"end":34,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":20,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":18,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":26,"cssClass":"pl-s1"},{"start":27,"end":29,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-s1"}],[],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":25,"cssClass":"pl-en"},{"start":26,"end":30,"cssClass":"pl-s1"}],[{"start":8,"end":45,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":15,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":19,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":20,"end":21,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":26,"cssClass":"pl-s1"},{"start":27,"end":29,"cssClass":"pl-s1"},{"start":31,"end":32,"cssClass":"pl-s1"}],[],[{"start":4,"end":62,"cssClass":"pl-c"}],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":29,"cssClass":"pl-en"},{"start":30,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":47,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-s1"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":40,"cssClass":"pl-v"},{"start":42,"end":44,"cssClass":"pl-k"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":31,"cssClass":"pl-en"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":71,"cssClass":"pl-s"},{"start":70,"end":71,"cssClass":"pl-cce"}],[{"start":0,"end":20,"cssClass":"pl-s"},{"start":0,"end":0,"cssClass":"pl-cce"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":30,"cssClass":"pl-s1"},{"start":31,"end":40,"cssClass":"pl-s1"},{"start":43,"end":44,"cssClass":"pl-s1"}],[],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":45,"end":49,"cssClass":"pl-c1"},{"start":52,"end":56,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":50,"end":54,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":22,"cssClass":"pl-c1"},{"start":24,"end":27,"cssClass":"pl-s"},{"start":29,"end":34,"cssClass":"pl-c1"},{"start":36,"end":43,"cssClass":"pl-s"},{"start":45,"end":51,"cssClass":"pl-c1"},{"start":53,"end":57,"cssClass":"pl-s"},{"start":59,"end":65,"cssClass":"pl-c1"}],[{"start":13,"end":21,"cssClass":"pl-s"},{"start":23,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-v"},{"start":34,"end":48,"cssClass":"pl-en"},{"start":49,"end":50,"cssClass":"pl-s1"}],[{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":25,"cssClass":"pl-s"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":37,"cssClass":"pl-s"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":42,"end":46,"cssClass":"pl-s"},{"start":48,"end":49,"cssClass":"pl-c1"},{"start":51,"end":59,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-v"},{"start":34,"end":48,"cssClass":"pl-en"},{"start":49,"end":50,"cssClass":"pl-s1"}],[{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":26,"cssClass":"pl-s"},{"start":28,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":25,"end":51,"cssClass":"pl-s"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":26,"cssClass":"pl-s"},{"start":28,"end":34,"cssClass":"pl-c1"},{"start":38,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-c1"},{"start":52,"end":56,"cssClass":"pl-s"},{"start":58,"end":59,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":25,"end":76,"cssClass":"pl-s"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":25,"cssClass":"pl-s"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":37,"cssClass":"pl-s"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":42,"end":46,"cssClass":"pl-s"},{"start":48,"end":49,"cssClass":"pl-c1"},{"start":51,"end":59,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-c1"}],[{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":22,"cssClass":"pl-c1"},{"start":24,"end":27,"cssClass":"pl-s"},{"start":29,"end":34,"cssClass":"pl-c1"},{"start":36,"end":43,"cssClass":"pl-s"},{"start":45,"end":51,"cssClass":"pl-c1"},{"start":53,"end":57,"cssClass":"pl-s"},{"start":59,"end":65,"cssClass":"pl-c1"}],[{"start":13,"end":21,"cssClass":"pl-s"},{"start":23,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-v"},{"start":34,"end":48,"cssClass":"pl-en"},{"start":49,"end":50,"cssClass":"pl-s1"}],[{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":25,"end":31,"cssClass":"pl-s"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":44,"cssClass":"pl-en"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":25,"end":35,"cssClass":"pl-s"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":31,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":23,"cssClass":"pl-s1"},{"start":24,"end":37,"cssClass":"pl-en"}],[{"start":8,"end":23,"cssClass":"pl-s1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":26,"end":30,"cssClass":"pl-v"},{"start":31,"end":45,"cssClass":"pl-en"},{"start":47,"end":57,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":24,"cssClass":"pl-en"},{"start":26,"end":36,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":31,"cssClass":"pl-s1"},{"start":32,"end":39,"cssClass":"pl-en"},{"start":40,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"},{"start":37,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":31,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"},{"start":29,"end":30,"cssClass":"pl-c1"},{"start":32,"end":33,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"},{"start":29,"end":30,"cssClass":"pl-c1"},{"start":32,"end":33,"cssClass":"pl-c1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":24,"cssClass":"pl-s1"},{"start":25,"end":38,"cssClass":"pl-en"},{"start":42,"end":44,"cssClass":"pl-s1"},{"start":45,"end":58,"cssClass":"pl-en"}],[{"start":22,"end":24,"cssClass":"pl-s1"},{"start":25,"end":38,"cssClass":"pl-en"}],[{"start":8,"end":23,"cssClass":"pl-s1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":26,"end":30,"cssClass":"pl-v"},{"start":31,"end":45,"cssClass":"pl-en"},{"start":46,"end":56,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":31,"cssClass":"pl-s1"},{"start":32,"end":39,"cssClass":"pl-en"},{"start":40,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"},{"start":37,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":22,"cssClass":"pl-c1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":23,"cssClass":"pl-s1"},{"start":24,"end":37,"cssClass":"pl-en"}],[{"start":8,"end":23,"cssClass":"pl-s1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":26,"end":30,"cssClass":"pl-v"},{"start":31,"end":45,"cssClass":"pl-en"},{"start":47,"end":57,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":24,"cssClass":"pl-en"},{"start":26,"end":36,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":31,"cssClass":"pl-s1"},{"start":32,"end":39,"cssClass":"pl-en"},{"start":40,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"},{"start":37,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":22,"cssClass":"pl-c1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":21,"cssClass":"pl-c1"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":21,"cssClass":"pl-c1"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":24,"cssClass":"pl-s1"},{"start":25,"end":38,"cssClass":"pl-en"},{"start":42,"end":44,"cssClass":"pl-s1"},{"start":45,"end":58,"cssClass":"pl-en"}],[{"start":22,"end":24,"cssClass":"pl-s1"},{"start":25,"end":38,"cssClass":"pl-en"}],[{"start":8,"end":23,"cssClass":"pl-s1"},{"start":24,"end":25,"cssClass":"pl-c1"},{"start":26,"end":30,"cssClass":"pl-v"},{"start":31,"end":45,"cssClass":"pl-en"},{"start":46,"end":56,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"}],[{"start":8,"end":18,"cssClass":"pl-s1"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":21,"end":31,"cssClass":"pl-s1"},{"start":32,"end":39,"cssClass":"pl-en"},{"start":40,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":35,"cssClass":"pl-s1"},{"start":37,"end":52,"cssClass":"pl-s1"}],[],[{"start":4,"end":62,"cssClass":"pl-c"}],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":36,"cssClass":"pl-en"},{"start":37,"end":41,"cssClass":"pl-s1"}],[{"start":8,"end":47,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-s1"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":40,"cssClass":"pl-v"},{"start":42,"end":44,"cssClass":"pl-k"},{"start":45,"end":46,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-v"},{"start":17,"end":33,"cssClass":"pl-en"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":73,"cssClass":"pl-s"},{"start":72,"end":73,"cssClass":"pl-cce"}],[{"start":0,"end":14,"cssClass":"pl-s"},{"start":0,"end":0,"cssClass":"pl-cce"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":30,"cssClass":"pl-s1"},{"start":31,"end":40,"cssClass":"pl-s1"},{"start":43,"end":44,"cssClass":"pl-s1"}],[],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":51,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":49,"cssClass":"pl-s"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":67,"cssClass":"pl-s"},{"start":66,"end":67,"cssClass":"pl-cce"}],[{"start":0,"end":72,"cssClass":"pl-s"},{"start":0,"end":0,"cssClass":"pl-cce"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":25,"cssClass":"pl-s"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":37,"cssClass":"pl-s"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":42,"end":46,"cssClass":"pl-s"},{"start":48,"end":49,"cssClass":"pl-c1"},{"start":51,"end":59,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-c1"}],[{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":22,"cssClass":"pl-c1"},{"start":24,"end":27,"cssClass":"pl-s"},{"start":29,"end":34,"cssClass":"pl-c1"},{"start":36,"end":43,"cssClass":"pl-s"},{"start":45,"end":51,"cssClass":"pl-c1"},{"start":53,"end":57,"cssClass":"pl-s"},{"start":59,"end":65,"cssClass":"pl-c1"}],[{"start":13,"end":21,"cssClass":"pl-s"},{"start":23,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":22,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":18,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":26,"cssClass":"pl-s"},{"start":28,"end":34,"cssClass":"pl-c1"},{"start":38,"end":43,"cssClass":"pl-s"},{"start":45,"end":48,"cssClass":"pl-c1"},{"start":52,"end":56,"cssClass":"pl-s"},{"start":58,"end":59,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":63,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":26,"cssClass":"pl-s"},{"start":28,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":38,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":25,"cssClass":"pl-s"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":37,"cssClass":"pl-s"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":42,"end":46,"cssClass":"pl-s"},{"start":48,"end":49,"cssClass":"pl-c1"},{"start":51,"end":59,"cssClass":"pl-s"},{"start":61,"end":62,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":66,"cssClass":"pl-s"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":14,"end":17,"cssClass":"pl-s"},{"start":19,"end":22,"cssClass":"pl-c1"},{"start":24,"end":27,"cssClass":"pl-s"},{"start":29,"end":34,"cssClass":"pl-c1"},{"start":36,"end":43,"cssClass":"pl-s"},{"start":45,"end":51,"cssClass":"pl-c1"},{"start":53,"end":57,"cssClass":"pl-s"},{"start":59,"end":65,"cssClass":"pl-c1"}],[{"start":13,"end":21,"cssClass":"pl-s"},{"start":23,"end":28,"cssClass":"pl-c1"}],[{"start":8,"end":9,"cssClass":"pl-s1"},{"start":10,"end":11,"cssClass":"pl-c1"},{"start":12,"end":69,"cssClass":"pl-s"},{"start":68,"end":69,"cssClass":"pl-cce"}],[{"start":0,"end":18,"cssClass":"pl-s"},{"start":0,"end":0,"cssClass":"pl-cce"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":29,"cssClass":"pl-v"},{"start":30,"end":46,"cssClass":"pl-en"},{"start":47,"end":48,"cssClass":"pl-s1"},{"start":51,"end":52,"cssClass":"pl-s1"}],[],[{"start":8,"end":15,"cssClass":"pl-s1"},{"start":16,"end":17,"cssClass":"pl-c1"}],[{"start":13,"end":17,"cssClass":"pl-s"},{"start":19,"end":21,"cssClass":"pl-c1"},{"start":23,"end":30,"cssClass":"pl-s"},{"start":32,"end":34,"cssClass":"pl-c1"},{"start":36,"end":44,"cssClass":"pl-s"},{"start":46,"end":47,"cssClass":"pl-c1"}],[{"start":13,"end":17,"cssClass":"pl-s"},{"start":19,"end":20,"cssClass":"pl-c1"},{"start":22,"end":29,"cssClass":"pl-s"},{"start":31,"end":32,"cssClass":"pl-c1"},{"start":34,"end":42,"cssClass":"pl-s"},{"start":44,"end":45,"cssClass":"pl-c1"}],[],[{"start":8,"end":16,"cssClass":"pl-s1"},{"start":17,"end":18,"cssClass":"pl-c1"},{"start":19,"end":28,"cssClass":"pl-v"},{"start":29,"end":45,"cssClass":"pl-en"}],[{"start":12,"end":21,"cssClass":"pl-v"},{"start":22,"end":36,"cssClass":"pl-en"},{"start":37,"end":44,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":32,"cssClass":"pl-s1"},{"start":34,"end":42,"cssClass":"pl-s1"}],[],[{"start":8,"end":66,"cssClass":"pl-c"}],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":27,"cssClass":"pl-en"},{"start":28,"end":32,"cssClass":"pl-s1"}],[{"start":8,"end":42,"cssClass":"pl-s"}],[{"start":8,"end":14,"cssClass":"pl-k"},{"start":15,"end":17,"cssClass":"pl-s1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":31,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":17,"cssClass":"pl-v"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":32,"end":34,"cssClass":"pl-s1"},{"start":36,"end":38,"cssClass":"pl-s1"}],[],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":34,"cssClass":"pl-s"},{"start":36,"end":39,"cssClass":"pl-s"},{"start":41,"end":43,"cssClass":"pl-k"},{"start":44,"end":48,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-s1"},{"start":38,"end":42,"cssClass":"pl-en"},{"start":47,"end":50,"cssClass":"pl-c1"}],[],[{"start":8,"end":17,"cssClass":"pl-v"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":35,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":34,"cssClass":"pl-s"},{"start":36,"end":39,"cssClass":"pl-s"},{"start":41,"end":43,"cssClass":"pl-k"},{"start":44,"end":48,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"},{"start":34,"end":38,"cssClass":"pl-en"},{"start":42,"end":46,"cssClass":"pl-s"}],[],[{"start":8,"end":11,"cssClass":"pl-k"}],[{"start":12,"end":14,"cssClass":"pl-s1"},{"start":15,"end":21,"cssClass":"pl-en"},{"start":22,"end":38,"cssClass":"pl-s"}],[{"start":8,"end":14,"cssClass":"pl-k"}],[{"start":12,"end":16,"cssClass":"pl-k"}],[{"start":8,"end":17,"cssClass":"pl-v"},{"start":18,"end":30,"cssClass":"pl-en"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":34,"cssClass":"pl-s"},{"start":36,"end":39,"cssClass":"pl-s"},{"start":41,"end":43,"cssClass":"pl-k"},{"start":44,"end":48,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"},{"start":34,"end":38,"cssClass":"pl-en"},{"start":42,"end":46,"cssClass":"pl-s"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":17,"cssClass":"pl-v"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":32,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":34,"cssClass":"pl-s"},{"start":36,"end":39,"cssClass":"pl-s"},{"start":41,"end":43,"cssClass":"pl-k"},{"start":44,"end":48,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-s1"},{"start":38,"end":42,"cssClass":"pl-en"},{"start":47,"end":49,"cssClass":"pl-c1"}],[],[{"start":8,"end":14,"cssClass":"pl-v"},{"start":15,"end":27,"cssClass":"pl-en"},{"start":28,"end":32,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":31,"cssClass":"pl-s"},{"start":33,"end":36,"cssClass":"pl-s"},{"start":38,"end":40,"cssClass":"pl-k"},{"start":41,"end":45,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"},{"start":34,"end":38,"cssClass":"pl-en"},{"start":42,"end":46,"cssClass":"pl-s"}],[],[{"start":8,"end":11,"cssClass":"pl-k"}],[{"start":12,"end":14,"cssClass":"pl-s1"},{"start":15,"end":21,"cssClass":"pl-en"},{"start":22,"end":35,"cssClass":"pl-s"}],[{"start":8,"end":14,"cssClass":"pl-k"}],[{"start":12,"end":16,"cssClass":"pl-k"}],[{"start":8,"end":14,"cssClass":"pl-v"},{"start":15,"end":27,"cssClass":"pl-en"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":31,"cssClass":"pl-s"},{"start":33,"end":36,"cssClass":"pl-s"},{"start":38,"end":40,"cssClass":"pl-k"},{"start":41,"end":45,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":33,"cssClass":"pl-s1"},{"start":34,"end":38,"cssClass":"pl-en"},{"start":42,"end":46,"cssClass":"pl-s"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":21,"cssClass":"pl-c1"}],[{"start":8,"end":14,"cssClass":"pl-v"},{"start":15,"end":27,"cssClass":"pl-en"},{"start":29,"end":31,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-k"},{"start":13,"end":17,"cssClass":"pl-en"},{"start":18,"end":31,"cssClass":"pl-s"},{"start":33,"end":36,"cssClass":"pl-s"},{"start":38,"end":40,"cssClass":"pl-k"},{"start":41,"end":45,"cssClass":"pl-s1"}],[{"start":12,"end":16,"cssClass":"pl-s1"},{"start":17,"end":28,"cssClass":"pl-en"},{"start":29,"end":32,"cssClass":"pl-en"},{"start":33,"end":37,"cssClass":"pl-s1"},{"start":38,"end":42,"cssClass":"pl-en"},{"start":47,"end":49,"cssClass":"pl-c1"}],[],[{"start":8,"end":66,"cssClass":"pl-c"}],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":21,"cssClass":"pl-en"},{"start":22,"end":26,"cssClass":"pl-s1"}],[{"start":8,"end":36,"cssClass":"pl-s"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"},{"start":29,"end":30,"cssClass":"pl-c1"}],[{"start":8,"end":21,"cssClass":"pl-s1"},{"start":22,"end":23,"cssClass":"pl-c1"},{"start":24,"end":26,"cssClass":"pl-s1"},{"start":27,"end":40,"cssClass":"pl-en"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":29,"cssClass":"pl-en"},{"start":30,"end":32,"cssClass":"pl-c1"},{"start":32,"end":45,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":31,"cssClass":"pl-s1"},{"start":34,"end":37,"cssClass":"pl-en"},{"start":38,"end":40,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":27,"cssClass":"pl-s1"},{"start":28,"end":30,"cssClass":"pl-c1"},{"start":31,"end":33,"cssClass":"pl-s1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":27,"cssClass":"pl-s1"},{"start":28,"end":30,"cssClass":"pl-c1"},{"start":31,"end":33,"cssClass":"pl-s1"}],[],[{"start":8,"end":66,"cssClass":"pl-c"}],[{"start":4,"end":7,"cssClass":"pl-k"},{"start":8,"end":29,"cssClass":"pl-en"},{"start":30,"end":34,"cssClass":"pl-s1"}],[{"start":8,"end":44,"cssClass":"pl-s"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":25,"cssClass":"pl-c1"},{"start":27,"end":28,"cssClass":"pl-c1"},{"start":30,"end":31,"cssClass":"pl-c1"},{"start":33,"end":34,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":22,"cssClass":"pl-v"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":15,"cssClass":"pl-s1"},{"start":16,"end":17,"cssClass":"pl-c1"},{"start":19,"end":21,"cssClass":"pl-s1"},{"start":23,"end":25,"cssClass":"pl-s1"}],[{"start":8,"end":17,"cssClass":"pl-v"},{"start":18,"end":30,"cssClass":"pl-en"},{"start":31,"end":38,"cssClass":"pl-s1"}],[{"start":8,"end":16,"cssClass":"pl-s1"},{"start":17,"end":18,"cssClass":"pl-c1"},{"start":19,"end":28,"cssClass":"pl-v"},{"start":29,"end":43,"cssClass":"pl-en"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":27,"cssClass":"pl-en"},{"start":28,"end":30,"cssClass":"pl-en"},{"start":31,"end":38,"cssClass":"pl-s1"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":44,"end":46,"cssClass":"pl-en"},{"start":47,"end":55,"cssClass":"pl-s1"},{"start":56,"end":57,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":36,"cssClass":"pl-s1"},{"start":37,"end":38,"cssClass":"pl-c1"},{"start":42,"end":45,"cssClass":"pl-en"},{"start":46,"end":54,"cssClass":"pl-s1"},{"start":55,"end":56,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":27,"cssClass":"pl-en"},{"start":28,"end":30,"cssClass":"pl-en"},{"start":31,"end":38,"cssClass":"pl-s1"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":44,"end":46,"cssClass":"pl-en"},{"start":47,"end":55,"cssClass":"pl-s1"},{"start":56,"end":57,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":36,"cssClass":"pl-s1"},{"start":37,"end":38,"cssClass":"pl-c1"},{"start":42,"end":45,"cssClass":"pl-en"},{"start":46,"end":54,"cssClass":"pl-s1"},{"start":55,"end":56,"cssClass":"pl-c1"}],[],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":21,"cssClass":"pl-c1"}],[{"start":8,"end":10,"cssClass":"pl-s1"},{"start":11,"end":12,"cssClass":"pl-c1"},{"start":13,"end":19,"cssClass":"pl-v"},{"start":20,"end":21,"cssClass":"pl-c1"},{"start":23,"end":24,"cssClass":"pl-c1"},{"start":26,"end":27,"cssClass":"pl-c1"}],[{"start":8,"end":15,"cssClass":"pl-s1"},{"start":16,"end":17,"cssClass":"pl-c1"},{"start":19,"end":21,"cssClass":"pl-s1"},{"start":23,"end":25,"cssClass":"pl-s1"}],[{"start":8,"end":14,"cssClass":"pl-v"},{"start":15,"end":27,"cssClass":"pl-en"},{"start":28,"end":35,"cssClass":"pl-s1"}],[{"start":8,"end":16,"cssClass":"pl-s1"},{"start":17,"end":18,"cssClass":"pl-c1"},{"start":19,"end":25,"cssClass":"pl-v"},{"start":26,"end":40,"cssClass":"pl-en"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":27,"cssClass":"pl-en"},{"start":28,"end":30,"cssClass":"pl-en"},{"start":31,"end":38,"cssClass":"pl-s1"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":44,"end":46,"cssClass":"pl-en"},{"start":47,"end":55,"cssClass":"pl-s1"},{"start":56,"end":57,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":36,"cssClass":"pl-s1"},{"start":37,"end":38,"cssClass":"pl-c1"},{"start":42,"end":45,"cssClass":"pl-en"},{"start":46,"end":54,"cssClass":"pl-s1"},{"start":55,"end":56,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":27,"cssClass":"pl-en"},{"start":28,"end":30,"cssClass":"pl-en"},{"start":31,"end":38,"cssClass":"pl-s1"},{"start":39,"end":40,"cssClass":"pl-c1"},{"start":44,"end":46,"cssClass":"pl-en"},{"start":47,"end":55,"cssClass":"pl-s1"},{"start":56,"end":57,"cssClass":"pl-c1"}],[{"start":8,"end":12,"cssClass":"pl-s1"},{"start":13,"end":24,"cssClass":"pl-en"},{"start":25,"end":28,"cssClass":"pl-en"},{"start":29,"end":36,"cssClass":"pl-s1"},{"start":37,"end":38,"cssClass":"pl-c1"},{"start":42,"end":45,"cssClass":"pl-en"},{"start":46,"end":54,"cssClass":"pl-s1"},{"start":55,"end":56,"cssClass":"pl-c1"}],[],[{"start":0,"end":2,"cssClass":"pl-k"},{"start":3,"end":11,"cssClass":"pl-s1"},{"start":12,"end":14,"cssClass":"pl-c1"},{"start":15,"end":25,"cssClass":"pl-s"}],[{"start":4,"end":12,"cssClass":"pl-s1"},{"start":13,"end":17,"cssClass":"pl-en"}]],"csv":null,"csvError":null,"dependabotInfo":{"showConfigurationBanner":false,"configFilePath":null,"networkDependabotPath":"/sadatmisr/alx/network/updates","dismissConfigurationNoticePath":"/settings/dismiss-notice/dependabot_configuration_notice","configurationNoticeDismissed":null,"repoAlertsPath":"/sadatmisr/alx/security/dependabot","repoSecurityAndAnalysisPath":"/sadatmisr/alx/settings/security_analysis","repoOwnerIsOrg":false,"currentUserCanAdminRepo":false},"displayName":"test_base.py","displayUrl":"https://github.com/sadatmisr/alx/blob/main/0x0C-python-almost_a_circle/tests/test_models/test_base.py?raw=true","headerInfo":{"blobSize":"10.2 KB","deleteInfo":{"deleteTooltip":"You must be signed in to make or propose changes"},"editInfo":{"editTooltip":"You must be signed in to make or propose changes"},"ghDesktopPath":"https://desktop.github.com","gitLfsPath":null,"onBranch":true,"shortPath":"5c7857f","siteNavLoginPath":"/login?return_to=https%3A%2F%2Fgithub.com%2Fsadatmisr%2Falx%2Fblob%2Fmain%2F0x0C-python-almost_a_circle%2Ftests%2Ftest_models%2Ftest_base.py","isCSV":false,"isRichtext":false,"toc":null,"lineInfo":{"truncatedLoc":"291","truncatedSloc":"247"},"mode":"file"},"image":false,"isCodeownersFile":null,"isPlain":false,"isValidLegacyIssueTemplate":false,"issueTemplateHelpUrl":"https://docs.github.com/articles/about-issue-and-pull-request-templates","issueTemplate":null,"discussionTemplate":null,"language":"Python","languageID":303,"large":false,"loggedIn":false,"newDiscussionPath":"/sadatmisr/alx/discussions/new","newIssuePath":"/sadatmisr/alx/issues/new","planSupportInfo":{"repoIsFork":null,"repoOwnedByCurrentUser":null,"requestFullPath":"/sadatmisr/alx/blob/main/0x0C-python-almost_a_circle/tests/test_models/test_base.py","showFreeOrgGatedFeatureMessage":null,"showPlanSupportBanner":null,"upgradeDataAttributes":null,"upgradePath":null},"publishBannersInfo":{"dismissActionNoticePath":"/settings/dismiss-notice/publish_action_from_dockerfile","dismissStackNoticePath":"/settings/dismiss-notice/publish_stack_from_file","releasePath":"/sadatmisr/alx/releases/new?marketplace=true","showPublishActionBanner":false,"showPublishStackBanner":false},"rawBlobUrl":"https://github.com/sadatmisr/alx/raw/main/0x0C-python-almost_a_circle/tests/test_models/test_base.py","renderImageOrRaw":false,"richText":null,"renderedFileInfo":null,"shortPath":null,"tabSize":8,"topBannersInfo":{"overridingGlobalFundingFile":false,"globalPreferredFundingPath":null,"repoOwner":"sadatmisr","repoName":"alx","showInvalidCitationWarning":false,"citationHelpUrl":"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-citation-files","showDependabotConfigurationBanner":false,"actionsOnboardingTip":null},"truncated":false,"viewable":true,"workflowRedirectUrl":null,"symbols":{"timedOut":false,"notAnalyzed":false,"symbols":[{"name":"TestBase","kind":"class","identStart":178,"identEnd":186,"extentStart":172,"extentEnd":10399,"fullyQualifiedName":"TestBase","identUtf16":{"start":{"lineNumber":8,"utf16Col":6},"end":{"lineNumber":8,"utf16Col":14}},"extentUtf16":{"start":{"lineNumber":8,"utf16Col":0},"end":{"lineNumber":287,"utf16Col":59}}},{"name":"setUp","kind":"function","identStart":248,"identEnd":253,"extentStart":244,"extentEnd":357,"fullyQualifiedName":"TestBase.setUp","identUtf16":{"start":{"lineNumber":11,"utf16Col":8},"end":{"lineNumber":11,"utf16Col":13}},"extentUtf16":{"start":{"lineNumber":11,"utf16Col":4},"end":{"lineNumber":14,"utf16Col":12}}},{"name":"tearDown","kind":"function","identStart":367,"identEnd":375,"extentStart":363,"extentEnd":443,"fullyQualifiedName":"TestBase.tearDown","identUtf16":{"start":{"lineNumber":16,"utf16Col":8},"end":{"lineNumber":16,"utf16Col":16}},"extentUtf16":{"start":{"lineNumber":16,"utf16Col":4},"end":{"lineNumber":18,"utf16Col":12}}},{"name":"test_A_nb_objects_private","kind":"function","identStart":453,"identEnd":478,"extentStart":449,"extentEnd":607,"fullyQualifiedName":"TestBase.test_A_nb_objects_private","identUtf16":{"start":{"lineNumber":20,"utf16Col":8},"end":{"lineNumber":20,"utf16Col":33}},"extentUtf16":{"start":{"lineNumber":20,"utf16Col":4},"end":{"lineNumber":22,"utf16Col":59}}},{"name":"test_B_nb_objects_initialized","kind":"function","identStart":617,"identEnd":646,"extentStart":613,"extentEnd":772,"fullyQualifiedName":"TestBase.test_B_nb_objects_initialized","identUtf16":{"start":{"lineNumber":24,"utf16Col":8},"end":{"lineNumber":24,"utf16Col":37}},"extentUtf16":{"start":{"lineNumber":24,"utf16Col":4},"end":{"lineNumber":26,"utf16Col":63}}},{"name":"test_C_instantiation","kind":"function","identStart":782,"identEnd":802,"extentStart":778,"extentEnd":1021,"fullyQualifiedName":"TestBase.test_C_instantiation","identUtf16":{"start":{"lineNumber":28,"utf16Col":8},"end":{"lineNumber":28,"utf16Col":28}},"extentUtf16":{"start":{"lineNumber":28,"utf16Col":4},"end":{"lineNumber":33,"utf16Col":33}}},{"name":"test_D_constructor","kind":"function","identStart":1031,"identEnd":1049,"extentStart":1027,"extentEnd":1297,"fullyQualifiedName":"TestBase.test_D_constructor","identUtf16":{"start":{"lineNumber":35,"utf16Col":8},"end":{"lineNumber":35,"utf16Col":26}},"extentUtf16":{"start":{"lineNumber":35,"utf16Col":4},"end":{"lineNumber":40,"utf16Col":47}}},{"name":"test_D_constructor_args_2","kind":"function","identStart":1307,"identEnd":1332,"extentStart":1303,"extentEnd":1621,"fullyQualifiedName":"TestBase.test_D_constructor_args_2","identUtf16":{"start":{"lineNumber":42,"utf16Col":8},"end":{"lineNumber":42,"utf16Col":33}},"extentUtf16":{"start":{"lineNumber":42,"utf16Col":4},"end":{"lineNumber":48,"utf16Col":47}}},{"name":"test_E_consecutive_ids","kind":"function","identStart":1631,"identEnd":1653,"extentStart":1627,"extentEnd":1780,"fullyQualifiedName":"TestBase.test_E_consecutive_ids","identUtf16":{"start":{"lineNumber":50,"utf16Col":8},"end":{"lineNumber":50,"utf16Col":30}},"extentUtf16":{"start":{"lineNumber":50,"utf16Col":4},"end":{"lineNumber":54,"utf16Col":42}}},{"name":"test_F_id_synced","kind":"function","identStart":1790,"identEnd":1806,"extentStart":1786,"extentEnd":1955,"fullyQualifiedName":"TestBase.test_F_id_synced","identUtf16":{"start":{"lineNumber":56,"utf16Col":8},"end":{"lineNumber":56,"utf16Col":24}},"extentUtf16":{"start":{"lineNumber":56,"utf16Col":4},"end":{"lineNumber":59,"utf16Col":66}}},{"name":"test_F_id_synced_more","kind":"function","identStart":1965,"identEnd":1986,"extentStart":1961,"extentEnd":2199,"fullyQualifiedName":"TestBase.test_F_id_synced_more","identUtf16":{"start":{"lineNumber":61,"utf16Col":8},"end":{"lineNumber":61,"utf16Col":29}},"extentUtf16":{"start":{"lineNumber":61,"utf16Col":4},"end":{"lineNumber":67,"utf16Col":66}}},{"name":"test_G_custom_id_int","kind":"function","identStart":2209,"identEnd":2229,"extentStart":2205,"extentEnd":2340,"fullyQualifiedName":"TestBase.test_G_custom_id_int","identUtf16":{"start":{"lineNumber":69,"utf16Col":8},"end":{"lineNumber":69,"utf16Col":28}},"extentUtf16":{"start":{"lineNumber":69,"utf16Col":4},"end":{"lineNumber":73,"utf16Col":33}}},{"name":"test_G_custom_id_str","kind":"function","identStart":2350,"identEnd":2370,"extentStart":2346,"extentEnd":2487,"fullyQualifiedName":"TestBase.test_G_custom_id_str","identUtf16":{"start":{"lineNumber":75,"utf16Col":8},"end":{"lineNumber":75,"utf16Col":28}},"extentUtf16":{"start":{"lineNumber":75,"utf16Col":4},"end":{"lineNumber":79,"utf16Col":33}}},{"name":"test_G_id_keyword","kind":"function","identStart":2497,"identEnd":2514,"extentStart":2493,"extentEnd":2640,"fullyQualifiedName":"TestBase.test_G_id_keyword","identUtf16":{"start":{"lineNumber":81,"utf16Col":8},"end":{"lineNumber":81,"utf16Col":25}},"extentUtf16":{"start":{"lineNumber":81,"utf16Col":4},"end":{"lineNumber":85,"utf16Col":33}}},{"name":"test_H_to_json_string","kind":"function","identStart":2713,"identEnd":2734,"extentStart":2709,"extentEnd":5619,"fullyQualifiedName":"TestBase.test_H_to_json_string","identUtf16":{"start":{"lineNumber":88,"utf16Col":8},"end":{"lineNumber":88,"utf16Col":29}},"extentUtf16":{"start":{"lineNumber":88,"utf16Col":4},"end":{"lineNumber":157,"utf16Col":53}}},{"name":"test_H_test_from_json_string","kind":"function","identStart":5692,"identEnd":5720,"extentStart":5688,"extentEnd":7732,"fullyQualifiedName":"TestBase.test_H_test_from_json_string","identUtf16":{"start":{"lineNumber":160,"utf16Col":8},"end":{"lineNumber":160,"utf16Col":36}},"extentUtf16":{"start":{"lineNumber":160,"utf16Col":4},"end":{"lineNumber":211,"utf16Col":66}}},{"name":"test_I_save_to_file","kind":"function","identStart":7741,"identEnd":7760,"extentStart":7737,"extentEnd":9126,"fullyQualifiedName":"TestBase.test_I_save_to_file","identUtf16":{"start":{"lineNumber":212,"utf16Col":8},"end":{"lineNumber":212,"utf16Col":27}},"extentUtf16":{"start":{"lineNumber":212,"utf16Col":4},"end":{"lineNumber":256,"utf16Col":66}}},{"name":"test_J_create","kind":"function","identStart":9135,"identEnd":9148,"extentStart":9131,"extentEnd":9495,"fullyQualifiedName":"TestBase.test_J_create","identUtf16":{"start":{"lineNumber":257,"utf16Col":8},"end":{"lineNumber":257,"utf16Col":21}},"extentUtf16":{"start":{"lineNumber":257,"utf16Col":4},"end":{"lineNumber":266,"utf16Col":66}}},{"name":"test_K_load_from_file","kind":"function","identStart":9504,"identEnd":9525,"extentStart":9500,"extentEnd":10399,"fullyQualifiedName":"TestBase.test_K_load_from_file","identUtf16":{"start":{"lineNumber":267,"utf16Col":8},"end":{"lineNumber":267,"utf16Col":29}},"extentUtf16":{"start":{"lineNumber":267,"utf16Col":4},"end":{"lineNumber":287,"utf16Col":59}}}]}},"copilotInfo":null,"copilotAccessAllowed":false,"csrf_tokens":{"/sadatmisr/alx/branches":{"post":"PAk-qI1NmDmxxTCfD8AebyYK0QhnH0_4Yb3tKn5Xh_d-HgIRUkXY1gRASoxmp0zu9LKVGDldNBLD0dxEAlG6FQ"},"/repos/preferences":{"post":"3mxbxlUgtYdPPop0oRvWbC9MGEcOXKwYUNTlcco8_HTkx3d91ZcT-t1Q8eEmD_yPaRAjDbayT9uDr4hDDC5OUg"}}},"title":"alx/0x0C-python-almost_a_circle/tests/test_models/test_base.py at main · sadatmisr/alx"}
+#!/usr/bin/python3
+"""Defines unittests for base.py.
+Unittest classes:
+    TestBase_instantiation - line 23
+    TestBase_to_json_string - line 110
+    TestBase_save_to_file - line 156
+    TestBase_from_json_string - line 234
+    TestBase_create - line 288
+    TestBase_load_from_file - line 340
+    TestBase_save_to_file_csv - line 406
+    TestBase_load_from_file_csv - line 484
+"""
+import os
+import unittest
+from models.base import Base
+from models.rectangle import Rectangle
+from models.square import Square
+
+
+class TestBase_instantiation(unittest.TestCase):
+    """Unittests for testing instantiation of the Base class."""
+
+    def test_no_arg(self):
+        b1 = Base()
+        b2 = Base()
+        self.assertEqual(b1.id, b2.id - 1)
+
+    def test_three_bases(self):
+        b1 = Base()
+        b2 = Base()
+        b3 = Base()
+        self.assertEqual(b1.id, b3.id - 2)
+
+    def test_None_id(self):
+        b1 = Base(None)
+        b2 = Base(None)
+        self.assertEqual(b1.id, b2.id - 1)
+
+    def test_unique_id(self):
+        self.assertEqual(12, Base(12).id)
+
+    def test_nb_instances_after_unique_id(self):
+        b1 = Base()
+        b2 = Base(12)
+        b3 = Base()
+        self.assertEqual(b1.id, b3.id - 1)
+
+    def test_id_public(self):
+        b = Base(12)
+        b.id = 15
+        self.assertEqual(15, b.id)
+
+    def test_nb_instances_private(self):
+        with self.assertRaises(AttributeError):
+            print(Base(12).__nb_instances)
+
+    def test_str_id(self):
+        self.assertEqual("hello", Base("hello").id)
+
+    def test_float_id(self):
+        self.assertEqual(5.5, Base(5.5).id)
+
+    def test_complex_id(self):
+        self.assertEqual(complex(5), Base(complex(5)).id)
+
+    def test_dict_id(self):
+        self.assertEqual({"a": 1, "b": 2}, Base({"a": 1, "b": 2}).id)
+
+    def test_bool_id(self):
+        self.assertEqual(True, Base(True).id)
+
+    def test_list_id(self):
+        self.assertEqual([1, 2, 3], Base([1, 2, 3]).id)
+
+    def test_tuple_id(self):
+        self.assertEqual((1, 2), Base((1, 2)).id)
+
+    def test_set_id(self):
+        self.assertEqual({1, 2, 3}, Base({1, 2, 3}).id)
+
+    def test_frozenset_id(self):
+        self.assertEqual(frozenset({1, 2, 3}), Base(frozenset({1, 2, 3})).id)
+
+    def test_range_id(self):
+        self.assertEqual(range(5), Base(range(5)).id)
+
+    def test_bytes_id(self):
+        self.assertEqual(b'Python', Base(b'Python').id)
+
+    def test_bytearray_id(self):
+        self.assertEqual(bytearray(b'abcefg'), Base(bytearray(b'abcefg')).id)
+
+    def test_memoryview_id(self):
+        self.assertEqual(memoryview(b'abcefg'), Base(memoryview(b'abcefg')).id)
+
+    def test_inf_id(self):
+        self.assertEqual(float('inf'), Base(float('inf')).id)
+
+    def test_NaN_id(self):
+        self.assertNotEqual(float('nan'), Base(float('nan')).id)
+
+    def test_two_args(self):
+        with self.assertRaises(TypeError):
+            Base(1, 2)
+
+
+class TestBase_to_json_string(unittest.TestCase):
+    """Unittests for testing to_json_string method of Base class."""
+
+    def test_to_json_string_rectangle_type(self):
+        r = Rectangle(10, 7, 2, 8, 6)
+        self.assertEqual(str, type(Base.to_json_string([r.to_dictionary()])))
+
+    def test_to_json_string_rectangle_one_dict(self):
+        r = Rectangle(10, 7, 2, 8, 6)
+        self.assertTrue(len(Base.to_json_string([r.to_dictionary()])) == 53)
+
+    def test_to_json_string_rectangle_two_dicts(self):
+        r1 = Rectangle(2, 3, 5, 19, 2)
+        r2 = Rectangle(4, 2, 4, 1, 12)
+        list_dicts = [r1.to_dictionary(), r2.to_dictionary()]
+        self.assertTrue(len(Base.to_json_string(list_dicts)) == 106)
+
+    def test_to_json_string_square_type(self):
+        s = Square(10, 2, 3, 4)
+        self.assertEqual(str, type(Base.to_json_string([s.to_dictionary()])))
+
+    def test_to_json_string_square_one_dict(self):
+        s = Square(10, 2, 3, 4)
+        self.assertTrue(len(Base.to_json_string([s.to_dictionary()])) == 39)
+
+    def test_to_json_string_square_two_dicts(self):
+        s1 = Square(10, 2, 3, 4)
+        s2 = Square(4, 5, 21, 2)
+        list_dicts = [s1.to_dictionary(), s2.to_dictionary()]
+        self.assertTrue(len(Base.to_json_string(list_dicts)) == 78)
+
+    def test_to_json_string_empty_list(self):
+        self.assertEqual("[]", Base.to_json_string([]))
+
+    def test_to_json_string_none(self):
+        self.assertEqual("[]", Base.to_json_string(None))
+
+    def test_to_json_string_no_args(self):
+        with self.assertRaises(TypeError):
+            Base.to_json_string()
+
+    def test_to_json_string_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Base.to_json_string([], 1)
+
+
+class TestBase_save_to_file(unittest.TestCase):
+    """Unittests for testing save_to_file method of Base class."""
+
+    @classmethod
+    def tearDown(self):
+        """Delete any created files."""
+        try:
+            os.remove("Rectangle.json")
+        except IOError:
+            pass
+        try:
+            os.remove("Square.json")
+        except IOError:
+            pass
+        try:
+            os.remove("Base.json")
+        except IOError:
+            pass
+
+    def test_save_to_file_one_rectangle(self):
+        r = Rectangle(10, 7, 2, 8, 5)
+        Rectangle.save_to_file([r])
+        with open("Rectangle.json", "r") as f:
+            self.assertTrue(len(f.read()) == 53)
+
+    def test_save_to_file_two_rectangles(self):
+        r1 = Rectangle(10, 7, 2, 8, 5)
+        r2 = Rectangle(2, 4, 1, 2, 3)
+        Rectangle.save_to_file([r1, r2])
+        with open("Rectangle.json", "r") as f:
+            self.assertTrue(len(f.read()) == 105)
+
+    def test_save_to_file_one_square(self):
+        s = Square(10, 7, 2, 8)
+        Square.save_to_file([s])
+        with open("Square.json", "r") as f:
+            self.assertTrue(len(f.read()) == 39)
+
+    def test_save_to_file_two_squares(self):
+        s1 = Square(10, 7, 2, 8)
+        s2 = Square(8, 1, 2, 3)
+        Square.save_to_file([s1, s2])
+        with open("Square.json", "r") as f:
+            self.assertTrue(len(f.read()) == 77)
+
+    def test_save_to_file_cls_name_for_filename(self):
+        s = Square(10, 7, 2, 8)
+        Base.save_to_file([s])
+        with open("Base.json", "r") as f:
+            self.assertTrue(len(f.read()) == 39)
+
+    def test_save_to_file_overwrite(self):
+        s = Square(9, 2, 39, 2)
+        Square.save_to_file([s])
+        s = Square(10, 7, 2, 8)
+        Square.save_to_file([s])
+        with open("Square.json", "r") as f:
+            self.assertTrue(len(f.read()) == 39)
+
+    def test_save_to_file_None(self):
+        Square.save_to_file(None)
+        with open("Square.json", "r") as f:
+            self.assertEqual("[]", f.read())
+
+    def test_save_to_file_empty_list(self):
+        Square.save_to_file([])
+        with open("Square.json", "r") as f:
+            self.assertEqual("[]", f.read())
+
+    def test_save_to_file_no_args(self):
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file()
+
+    def test_save_to_file_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Square.save_to_file([], 1)
+
+
+class TestBase_from_json_string(unittest.TestCase):
+    """Unittests for testing from_json_string method of Base class."""
+
+    def test_from_json_string_type(self):
+        list_input = [{"id": 89, "width": 10, "height": 4}]
+        json_list_input = Rectangle.to_json_string(list_input)
+        list_output = Rectangle.from_json_string(json_list_input)
+        self.assertEqual(list, type(list_output))
+
+    def test_from_json_string_one_rectangle(self):
+        list_input = [{"id": 89, "width": 10, "height": 4, "x": 7}]
+        json_list_input = Rectangle.to_json_string(list_input)
+        list_output = Rectangle.from_json_string(json_list_input)
+        self.assertEqual(list_input, list_output)
+
+    def test_from_json_string_two_rectangles(self):
+        list_input = [
+            {"id": 89, "width": 10, "height": 4, "x": 7, "y": 8},
+            {"id": 98, "width": 5, "height": 2, "x": 1, "y": 3},
+        ]
+        json_list_input = Rectangle.to_json_string(list_input)
+        list_output = Rectangle.from_json_string(json_list_input)
+        self.assertEqual(list_input, list_output)
+
+    def test_from_json_string_one_square(self):
+        list_input = [{"id": 89, "size": 10, "height": 4}]
+        json_list_input = Square.to_json_string(list_input)
+        list_output = Square.from_json_string(json_list_input)
+        self.assertEqual(list_input, list_output)
+
+    def test_from_json_string_two_squares(self):
+        list_input = [
+            {"id": 89, "size": 10, "height": 4},
+            {"id": 7, "size": 1, "height": 7}
+        ]
+        json_list_input = Square.to_json_string(list_input)
+        list_output = Square.from_json_string(json_list_input)
+        self.assertEqual(list_input, list_output)
+
+    def test_from_json_string_None(self):
+        self.assertEqual([], Base.from_json_string(None))
+
+    def test_from_json_string_empty_list(self):
+        self.assertEqual([], Base.from_json_string("[]"))
+
+    def test_from_json_string_no_args(self):
+        with self.assertRaises(TypeError):
+            Base.from_json_string()
+
+    def test_from_json_string_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Base.from_json_string([], 1)
+
+
+class TestBase_create(unittest.TestCase):
+    """Unittests for testing create method of Base class."""
+
+    def test_create_rectangle_original(self):
+        r1 = Rectangle(3, 5, 1, 2, 7)
+        r1_dictionary = r1.to_dictionary()
+        r2 = Rectangle.create(**r1_dictionary)
+        self.assertEqual("[Rectangle] (7) 1/2 - 3/5", str(r1))
+
+    def test_create_rectangle_new(self):
+        r1 = Rectangle(3, 5, 1, 2, 7)
+        r1_dictionary = r1.to_dictionary()
+        r2 = Rectangle.create(**r1_dictionary)
+        self.assertEqual("[Rectangle] (7) 1/2 - 3/5", str(r2))
+
+    def test_create_rectangle_is(self):
+        r1 = Rectangle(3, 5, 1, 2, 7)
+        r1_dictionary = r1.to_dictionary()
+        r2 = Rectangle.create(**r1_dictionary)
+        self.assertIsNot(r1, r2)
+
+    def test_create_rectangle_equals(self):
+        r1 = Rectangle(3, 5, 1, 2, 7)
+        r1_dictionary = r1.to_dictionary()
+        r2 = Rectangle.create(**r1_dictionary)
+        self.assertNotEqual(r1, r2)
+
+    def test_create_square_original(self):
+        s1 = Square(3, 5, 1, 7)
+        s1_dictionary = s1.to_dictionary()
+        s2 = Square.create(**s1_dictionary)
+        self.assertEqual("[Square] (7) 5/1 - 3", str(s1))
+
+    def test_create_square_new(self):
+        s1 = Square(3, 5, 1, 7)
+        s1_dictionary = s1.to_dictionary()
+        s2 = Square.create(**s1_dictionary)
+        self.assertEqual("[Square] (7) 5/1 - 3", str(s2))
+
+    def test_create_square_is(self):
+        s1 = Square(3, 5, 1, 7)
+        s1_dictionary = s1.to_dictionary()
+        s2 = Square.create(**s1_dictionary)
+        self.assertIsNot(s1, s2)
+
+    def test_create_square_equals(self):
+        s1 = Square(3, 5, 1, 7)
+        s1_dictionary = s1.to_dictionary()
+        s2 = Square.create(**s1_dictionary)
+        self.assertNotEqual(s1, s2)
+
+
+class TestBase_load_from_file(unittest.TestCase):
+    """Unittests for testing load_from_file_method of Base class."""
+
+    @classmethod
+    def tearDown(self):
+        """Delete any created files."""
+        try:
+            os.remove("Rectangle.json")
+        except IOError:
+            pass
+        try:
+            os.remove("Square.json")
+        except IOError:
+            pass
+
+    def test_load_from_file_first_rectangle(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file([r1, r2])
+        list_rectangles_output = Rectangle.load_from_file()
+        self.assertEqual(str(r1), str(list_rectangles_output[0]))
+
+    def test_load_from_file_second_rectangle(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file([r1, r2])
+        list_rectangles_output = Rectangle.load_from_file()
+        self.assertEqual(str(r2), str(list_rectangles_output[1]))
+
+    def test_load_from_file_rectangle_types(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file([r1, r2])
+        output = Rectangle.load_from_file()
+        self.assertTrue(all(type(obj) == Rectangle for obj in output))
+
+    def test_load_from_file_first_square(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file([s1, s2])
+        list_squares_output = Square.load_from_file()
+        self.assertEqual(str(s1), str(list_squares_output[0]))
+
+    def test_load_from_file_second_square(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file([s1, s2])
+        list_squares_output = Square.load_from_file()
+        self.assertEqual(str(s2), str(list_squares_output[1]))
+
+    def test_load_from_file_square_types(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file([s1, s2])
+        output = Square.load_from_file()
+        self.assertTrue(all(type(obj) == Square for obj in output))
+
+    def test_load_from_file_no_file(self):
+        output = Square.load_from_file()
+        self.assertEqual([], output)
+
+    def test_load_from_file_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Base.load_from_file([], 1)
+
+
+class TestBase_save_to_file_csv(unittest.TestCase):
+    """Unittests for testing save_to_file_csv method of Base class."""
+
+    @classmethod
+    def tearDown(self):
+        """Delete any created files."""
+        try:
+            os.remove("Rectangle.csv")
+        except IOError:
+            pass
+        try:
+            os.remove("Square.csv")
+        except IOError:
+            pass
+        try:
+            os.remove("Base.csv")
+        except IOError:
+            pass
+
+    def test_save_to_file_csv_one_rectangle(self):
+        r = Rectangle(10, 7, 2, 8, 5)
+        Rectangle.save_to_file_csv([r])
+        with open("Rectangle.csv", "r") as f:
+            self.assertTrue("5,10,7,2,8", f.read())
+
+    def test_save_to_file_csv_two_rectangles(self):
+        r1 = Rectangle(10, 7, 2, 8, 5)
+        r2 = Rectangle(2, 4, 1, 2, 3)
+        Rectangle.save_to_file_csv([r1, r2])
+        with open("Rectangle.csv", "r") as f:
+            self.assertTrue("5,10,7,2,8\n2,4,1,2,3", f.read())
+
+    def test_save_to_file_csv_one_square(self):
+        s = Square(10, 7, 2, 8)
+        Square.save_to_file_csv([s])
+        with open("Square.csv", "r") as f:
+            self.assertTrue("8,10,7,2", f.read())
+
+    def test_save_to_file_csv_two_squares(self):
+        s1 = Square(10, 7, 2, 8)
+        s2 = Square(8, 1, 2, 3)
+        Square.save_to_file_csv([s1, s2])
+        with open("Square.csv", "r") as f:
+            self.assertTrue("8,10,7,2\n3,8,1,2", f.read())
+
+    def test_save_to_file__csv_cls_name(self):
+        s = Square(10, 7, 2, 8)
+        Base.save_to_file_csv([s])
+        with open("Base.csv", "r") as f:
+            self.assertTrue("8,10,7,2", f.read())
+
+    def test_save_to_file_csv_overwrite(self):
+        s = Square(9, 2, 39, 2)
+        Square.save_to_file_csv([s])
+        s = Square(10, 7, 2, 8)
+        Square.save_to_file_csv([s])
+        with open("Square.csv", "r") as f:
+            self.assertTrue("8,10,7,2", f.read())
+
+    def test_save_to_file__csv_None(self):
+        Square.save_to_file_csv(None)
+        with open("Square.csv", "r") as f:
+            self.assertEqual("[]", f.read())
+
+    def test_save_to_file_csv_empty_list(self):
+        Square.save_to_file_csv([])
+        with open("Square.csv", "r") as f:
+            self.assertEqual("[]", f.read())
+
+    def test_save_to_file_csv_no_args(self):
+        with self.assertRaises(TypeError):
+            Rectangle.save_to_file_csv()
+
+    def test_save_to_file_csv_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Square.save_to_file_csv([], 1)
+
+
+class TestBase_load_from_file_csv(unittest.TestCase):
+    """Unittests for testing load_from_file_csv method of Base class."""
+
+    @classmethod
+    def tearDown(self):
+        """Delete any created files."""
+        try:
+            os.remove("Rectangle.csv")
+        except IOError:
+            pass
+        try:
+            os.remove("Square.csv")
+        except IOError:
+            pass
+
+    def test_load_from_file_csv_first_rectangle(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file_csv([r1, r2])
+        list_rectangles_output = Rectangle.load_from_file_csv()
+        self.assertEqual(str(r1), str(list_rectangles_output[0]))
+
+    def test_load_from_file_csv_second_rectangle(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file_csv([r1, r2])
+        list_rectangles_output = Rectangle.load_from_file_csv()
+        self.assertEqual(str(r2), str(list_rectangles_output[1]))
+
+    def test_load_from_file_csv_rectangle_types(self):
+        r1 = Rectangle(10, 7, 2, 8, 1)
+        r2 = Rectangle(2, 4, 5, 6, 2)
+        Rectangle.save_to_file_csv([r1, r2])
+        output = Rectangle.load_from_file_csv()
+        self.assertTrue(all(type(obj) == Rectangle for obj in output))
+
+    def test_load_from_file_csv_first_square(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file_csv([s1, s2])
+        list_squares_output = Square.load_from_file_csv()
+        self.assertEqual(str(s1), str(list_squares_output[0]))
+
+    def test_load_from_file_csv_second_square(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file_csv([s1, s2])
+        list_squares_output = Square.load_from_file_csv()
+        self.assertEqual(str(s2), str(list_squares_output[1]))
+
+    def test_load_from_file_csv_square_types(self):
+        s1 = Square(5, 1, 3, 3)
+        s2 = Square(9, 5, 2, 3)
+        Square.save_to_file_csv([s1, s2])
+        output = Square.load_from_file_csv()
+        self.assertTrue(all(type(obj) == Square for obj in output))
+
+    def test_load_from_file_csv_no_file(self):
+        output = Square.load_from_file_csv()
+        self.assertEqual([], output)
+
+    def test_load_from_file_csv_more_than_one_arg(self):
+        with self.assertRaises(TypeError):
+            Base.load_from_file_csv([], 1)
+
+if __name__ == "__main__":
+    unittest.main()
